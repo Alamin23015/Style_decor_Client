@@ -1,30 +1,22 @@
-import { Toaster } from 'react-hot-toast'
-import Navbar from './components/Navbar'
-import { Outlet } from 'react-router-dom'
-import Footer from './components/Footer'
-//import { useAuth } from './hooks/useAuth'
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 function App() {
-  const { loading } = useAuth()
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    )
-  }
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <div>
+      {/* ন্যাপবার সবসময় উপরে থাকবে */}
       <Navbar />
-      <div className="flex-1">
+      
+      {/* ডাইনামিক কন্টেন্ট বা পেজগুলো এখানে লোড হবে */}
+      <div className="min-h-[calc(100vh-300px)]">
         <Outlet />
       </div>
+
+      {/* ফুটার সবসময় নিচে থাকবে */}
       <Footer />
-      <Toaster />
     </div>
   )
 }
 
-export default App
+export default App;
