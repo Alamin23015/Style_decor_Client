@@ -1,0 +1,26 @@
+[
+  {
+    "service_name": "Wedding Stage Decoration",
+    "image": "https://images.unsplash.com/photo-1519225468063-5078e22560b4?q=80&w=2069&auto=format&fit=crop",
+    "price": 12000,
+    "description": "Elegant wedding stage setup with floral arrangements and lighting.",
+    "provider_image": "https://i.pravatar.cc/150?img=1",
+    "provider_name": "Rahim Decorators"
+  },
+  {
+    "service_name": "Birthday Balloon Blast",
+    "image": "https://images.unsplash.com/photo-1530103862676-de3c9da59af7?q=80&w=2057&auto=format&fit=crop",
+    "price": 5000,
+    "description": "Colorful balloon decoration for kids' birthday parties.",
+    "provider_image": "https://i.pravatar.cc/150?img=2",
+    "provider_name": "Fun Events"
+  },
+  {
+    "service_name": "Corporate Seminar Setup",
+    "image": "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop",
+    "price": 25000,
+    "description": "Professional stage and seating arrangement for corporate events.",
+    "provider_image": "https://i.pravatar.cc/150?img=3",
+    "provider_name": "Elite Planners"
+  }
+]
