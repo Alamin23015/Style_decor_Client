@@ -1,50 +1,39 @@
-import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
-import Home from "../pages/Home";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import Services from "../pages/Services"; 
-import DashboardLayout from "../layout/DashboardLayout"; 
+// src/routes/Routes.jsx
+import { Route } from 'react-router-dom'
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />, 
-    children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "services",
-        element: <Services />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-      },
-    ],
-  },
-  {
-    path: "dashboard",
-    element: <DashboardLayout />, 
-    children: [
-      {
-        path: "my-bookings", 
-        element: <div>My Bookings Page (Coming Soon)</div>, 
-      },
-      {
-        path: "all-users", 
-        element: <div>All Users Page (Coming Soon)</div>,
-      },
-      {
-        path: "my-projects", 
-        element: <div>My Projects Page (Coming Soon)</div>,
-      }
-    ]
-  },
-]);
+// Pages
+import Home from '../pages/Home/Home'
+import Services from '../pages/Services/Services'
+import ServiceDetails from '../pages/Services/ServiceDetails'
+import Login from '../pages/Auth/Login'
+import Register from '../pages/Auth/Register'
+import DashboardLayout from '../layout/DashboardLayout'
+
+// Dashboard Pages
+import UserDashboard from '../pages/Dashboard/UserDashboard'
+import AdminDashboard from '../pages/Dashboard/AdminDashboard'
+import MyBookings from '../pages/Dashboard/MyBookings'
+
+// Routes
+import PrivateRoute from './PrivateRoute'
+import AdminRoute from './AdminRoute'
+<Route path="/register" element={<Register />} />
+const RoutesConfig = (
+  <>
+    <Route path="/home" element={<Home />} />
+    <Route path="/services" element={<Services />} />
+    <Route path="/services/:id" element={<ServiceDetails />} />
+    />
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+
+    {/* Dashboard Routes */}
+    <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
+      <Route index element={<UserDashboard />} />
+      <Route path="my-bookings" element={<MyBookings />} />
+      <Route path="admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+    </Route>
+  </>
+)
+
+export default RoutesConfig

@@ -1,15 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import useAuth from "./useAuth";
-import axios from "axios";
+// src/hooks/useRole.jsx
+import { useQuery } from '@tanstack/react-query';
+import useAuth from './useAuth';
+import axios from 'axios';
 
 const useRole = () => {
   const { user, loading } = useAuth();
 
-  const { data: role = "", isLoading } = useQuery({
-    queryKey: ["role", user?.email],
+  const { data: role = 'user', isLoading } = useQuery({
+    queryKey: ['role', user?.email],
     enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(`https://tui-server.vercel.app/user/role/${user?.email}`);
+      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/role/${user.email}`);
       return res.data.role;
     },
   });
