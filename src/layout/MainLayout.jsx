@@ -1,17 +1,16 @@
-// src/layout/MainLayout.jsx
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 const MainLayout = () => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="min-h-screen pt-20 pb-10 bg-base-100">
-        <Outlet />   {/* এই লাইনটা না থাকলে কোনো পেজ দেখাবে না! */}
-      </main>
+      <div className="flex-1 pt-20">
+        <Outlet />   {/* এই লাইন না থাকলে কোনো পেজ দেখাবে না */}
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
