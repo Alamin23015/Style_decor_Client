@@ -45,21 +45,31 @@ const ServiceDetails = () => {
   };
 
   const confirmBooking = () => {
-    const bookingData = {
-      serviceId: service._id,
-      serviceName: service.service_name || service.name, 
-      serviceImg: service.img || service.image,
-      cost: service.cost || service.price,
-      unit: service.unit,
-      customerName: user.displayName,
-      customerEmail: user.email,
-      customerPhoto: user.photoURL,
-      bookingDate,
-      location,
-      status: "pending",
-      bookedAt: new Date()
-    };
+  {
+  const bookingData = {
+    serviceId: service._id,
+    serviceName: service.service_name,
+    serviceImg: service.img,
+    cost: service.cost,
+    unit: service.unit,
+    customerName: user.displayName,
+    email: user.email,           // ← এটা দে (customerEmail না)
+    customerPhoto: user.photoURL,
+    bookingDate,
+    location,
+    status: "pending",
+    bookedAt: new Date()
+  };
 
+  axios.post("http://localhost:5000/bookings", bookingData)
+    .then(res => {
+      if (res.data.insertedId) {
+        toast.success("Booking successful!");
+        setModalOpen(false);
+      }
+    })
+    .catch(() => toast.error("Booking failed"));
+};
     axios.post(`${baseUrl}/bookings`, bookingData)
       .then(res => {
         if (res.data.insertedId) {

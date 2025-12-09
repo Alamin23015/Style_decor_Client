@@ -1,7 +1,7 @@
-// src/App.jsx  ← পুরোটা এভাবে রাখ
+// src/App.jsx
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
-import DashboardLayout from "./layout/DashboardLayout";
+import DashboardLayout from "./pages/Dashboard/DashboardLayout";
 
 import Home from "./pages/Home/Home";
 import Services from "./pages/Services/Services";
@@ -11,7 +11,7 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 
-import UserDashboard from "./pages/Dashboard/UserDashboard";
+import MyBookings from "./pages/Dashboard/MyBookings";
 import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
@@ -37,7 +37,8 @@ function App() {
           </PrivateRoute>
         }
       >
-        <Route index element={<UserDashboard />} />
+        
+        <Route index element={<MyBookings />} />
       </Route>
     </Routes>
   );
