@@ -30,7 +30,7 @@ const ServiceDetails = () => {
         setLoading(false);
       })
       .catch(err => {
-        // toast.error("Service not found"); // বারবার টোস্ট যাতে না আসে তাই অফ রাখলাম
+        
         setLoading(false);
       });
   }, [id]);

@@ -11,8 +11,8 @@ import DashboardLayout from '../layout/DashboardLayout'
 
 // Dashboard Pages
 import UserDashboard from '../pages/Dashboard/UserDashboard'
-import AdminDashboard from '../pages/Dashboard/AdminDashboard'
-import MyBookings from '../pages/Dashboard/MyBookings'
+import AdminDashboard from '../pages/Dashboard/Admin/AdminDashboard'
+import MyBookings from '../pages/Dashboard/User/MyBookings'
 
 // Routes
 import PrivateRoute from './PrivateRoute'
