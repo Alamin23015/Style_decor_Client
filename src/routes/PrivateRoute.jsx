@@ -20,4 +20,4 @@ const PrivateRoute = ({ children }) => {
   return children;
 };
 
-export default PrivateRoute;   // এটাই মূল লাইন
+export default PrivateRoute;   

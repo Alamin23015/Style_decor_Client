@@ -23,7 +23,7 @@ const RoutesConfig = (
     <Route path="/home" element={<Home />} />
     <Route path="/services" element={<Services />} />
     <Route path="/services/:id" element={<ServiceDetails />} />
-    />
+    
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
 

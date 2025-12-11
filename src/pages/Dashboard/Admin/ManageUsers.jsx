@@ -6,9 +6,11 @@ import { toast } from "react-toastify";
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+   const baseUrl = import.meta.env.VITE_SERVER_URL || 'https://style-decor-server-production.up.railway.app';
+
 
   useEffect(() => {
-    axios.get("http://localhost:5000/admin/users")
+    axios.get(`${baseUrl}/admin/users`)
       .then(res => {
         setUsers(res.data);
         setLoading(false);
@@ -20,13 +22,13 @@ const ManageUsers = () => {
   }, []);
 
   const updateRole = (email, newRole) => {
-    axios.put(`http://localhost:5000/users/${email}`, { role: newRole })
+    axios.put(`${baseUrl}/users/${email}`, { role: newRole })
       .then(() => {
         toast.success(`User is now ${newRole}!`);
         setUsers(users.map(u => u.email === email ? { ...u, role: newRole } : u));
       })
       .catch(() => toast.error("Failed to update role"));
-  };   // এই `}` আগে মিসিং ছিল — এখন ঠিক
+  };  
 
   if (loading) {
     return (

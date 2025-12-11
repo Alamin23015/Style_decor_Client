@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import { createContext, useEffect, useState } from "react";
 import { 
   getAuth, 
@@ -15,7 +14,14 @@ import axios from "axios";
 
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
+
+// Google Provider Setup
 const googleProvider = new GoogleAuthProvider();
+
+// 🔥 এই লাইনটি যোগ করা হয়েছে: এতে প্রতিবার একাউন্ট সিলেক্ট করতে বলবে 🔥
+googleProvider.setCustomParameters({
+    prompt: 'select_account'
+});
 
 // এই ফাংশনটা দিয়ে ইউজারকে ডাটাবেসে সেভ করব
 const saveUserToDB = async (user) => {

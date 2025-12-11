@@ -7,8 +7,11 @@ const AllBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
+   const baseUrl = import.meta.env.VITE_SERVER_URL || 'https://style-decor-server-production.up.railway.app';
+
+
   useEffect(() => {
-    axios.get("http://localhost:5000/admin/bookings")
+    axios.get(`${baseUrl}/admin/bookings`)
       .then(res => {
         setBookings(res.data);
         setLoading(false);
@@ -32,7 +35,7 @@ const AllBookings = () => {
 
       <div className="overflow-x-auto shadow-2xl rounded-2xl">
         <table className="table table-zebra w-full">
-          <thead className className="bg-base-300 text-base-content">
+          <thead className="bg-base-300 text-base-content">
             <tr className="text-left text-sm md:text-base">
               <th className="p-4">Customer</th>
               <th className="p-4">Service</th>

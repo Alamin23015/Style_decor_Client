@@ -1,9 +1,10 @@
+// src/pages/Services/ServiceDetails.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
-// import { format } from "date-fns"; // এটি আর লাগছে না
+import PaymentModal from "../../components/PaymentModal";
 
 const ServiceDetails = () => {
   const { id } = useParams();
@@ -15,25 +16,19 @@ const ServiceDetails = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [bookingDate, setBookingDate] = useState("");
   const [location, setLocation] = useState("");
+  const [showPayment, setShowPayment] = useState(false);
 
-
-  const baseUrl = import.meta.env.VITE_SERVER_URL || 'https://style-decor-server-production.up.railway.app';
-
- 
+  const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app";
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
-   
     axios.get(`${baseUrl}/services/${id}`)
       .then(res => {
         setService(res.data);
         setLoading(false);
       })
-      .catch(err => {
-        
-        setLoading(false);
-      });
-  }, [id]);
+      .catch(() => setLoading(false));
+  }, [id, baseUrl]);
 
   const handleBooking = () => {
     if (!user) {
@@ -45,31 +40,21 @@ const ServiceDetails = () => {
   };
 
   const confirmBooking = () => {
-  {
-  const bookingData = {
-    serviceId: service._id,
-    serviceName: service.service_name,
-    serviceImg: service.img,
-    cost: service.cost,
-    unit: service.unit,
-    customerName: user.displayName,
-    email: user.email,           // ← এটা দে (customerEmail না)
-    customerPhoto: user.photoURL,
-    bookingDate,
-    location,
-    status: "pending",
-    bookedAt: new Date()
-  };
+    const bookingData = {
+      serviceId: service._id,
+      serviceName: service.service_name,
+      serviceImg: service.img,
+      cost: service.cost,
+      unit: service.unit,
+      customerName: user.displayName,
+      email: user.email,
+      customerPhoto: user.photoURL,
+      bookingDate,
+      location,
+      status: "pending",
+      bookedAt: new Date()
+    };
 
-  axios.post("http://localhost:5000/bookings", bookingData)
-    .then(res => {
-      if (res.data.insertedId) {
-        toast.success("Booking successful!");
-        setModalOpen(false);
-      }
-    })
-    .catch(() => toast.error("Booking failed"));
-};
     axios.post(`${baseUrl}/bookings`, bookingData)
       .then(res => {
         if (res.data.insertedId) {
@@ -77,9 +62,10 @@ const ServiceDetails = () => {
           setModalOpen(false);
           setBookingDate("");
           setLocation("");
+          setShowPayment(true);
         }
       })
-      .catch(err => toast.error("Booking failed"));
+      .catch(() => toast.error("Booking failed"));
   };
 
   if (loading) return (
@@ -90,71 +76,66 @@ const ServiceDetails = () => {
 
   if (!service) return (
     <div className="min-h-screen flex justify-center items-center bg-base-200">
-        <div className="text-center py-20 text-3xl text-error font-semibold">Service not found</div>
+      <div className="text-center py-20 text-3xl text-error font-semibold">Service not found</div>
     </div>
   );
 
- 
-  const serviceName = service.service_name || service.name;
-  const serviceImg = service.img || service.image || "https://i.ibb.co/0s3pdnc/avatar.png";
-  const serviceCost = service.cost || service.price;
+  const serviceName = service.service_name || "Unknown Service";
+  const serviceImg = service.img || "https://i.ibb.co/0s3pdnc/avatar.png";
+  const serviceCost = service.cost || 0;
   const serviceUnit = service.unit || "event";
   const serviceDesc = service.description || "No description available.";
   const serviceCategory = service.category || "General";
 
-
   return (
-    <div className="min-h-screen py-28 px-6 bg-base-200 font-sans"> 
+    <div className="min-h-screen py-28 px-6 bg-base-200">
       <div className="container mx-auto max-w-6xl">
-        <div className="bg-base-100 rounded-3xl shadow-2xl overflow-hidden"> 
-            <div className="grid grid-cols-1 lg:grid-cols-2">
-            
-           
+        <div className="bg-base-100 rounded-3xl shadow-2xl overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="relative h-[400px] lg:h-auto lg:min-h-[600px] overflow-hidden">
-                <img 
+              <img 
                 src={serviceImg} 
                 alt={serviceName} 
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" 
-                />
-                <div className="absolute top-6 left-6">
-                    <div className="badge badge-primary badge-lg text-white font-semibold px-4 py-3 shadow-md capitalize">
-                        {serviceCategory}
-                    </div>
+              />
+              <div className="absolute top-6 left-6">
+                <div className="badge badge-primary badge-lg text-white font-semibold px-4 py-3 shadow-md capitalize">
+                  {serviceCategory}
                 </div>
+              </div>
             </div>
 
-            
             <div className="p-10 lg:p-16 flex flex-col justify-center bg-base-100">
-                <h1 className="text-4xl lg:text-5xl font-extrabold mb-8 text-base-content leading-tight font-serif"> 
-                    {serviceName}
-                </h1>
-                
-                <div className="divider mb-8"></div> 
+              <h1 className="text-4xl lg:text-5xl font-extrabold mb-8 text-base-content leading-tight">
+                {serviceName}
+              </h1>
+              
+              <div className="divider mb-8"></div>
 
-                <p className="text-xl text-base-content/80 mb-10 leading-relaxed">
-                    {serviceDesc}
-                </p>
+              <p className="text-xl text-base-content/80 mb-10 leading-relaxed">
+                {serviceDesc}
+              </p>
 
-                <div className="flex items-center mb-12">
-                    <span className="text-2xl font-semibold mr-2 text-base-content/70">Price:</span>
-                    <div className="text-5xl font-extrabold text-primary">
-                    ৳{serviceCost} <span className="text-xl font-medium text-base-content/60">/{serviceUnit}</span>
-                    </div>
+              <div className="flex items-center mb-12">
+                <span className="text-2xl font-semibold mr-2 text-base-content/70">Price:</span>
+                <div className="text-5xl font-extrabold text-primary">
+                  ৳{serviceCost} <span className="text-xl font-medium text-base-content/60">/{serviceUnit}</span>
                 </div>
+              </div>
 
-                <button onClick={handleBooking} className="btn btn-primary btn-lg rounded-full w-full text-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+              <button onClick={handleBooking} className="btn btn-primary btn-lg rounded-full w-full text-xl font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
                 Book Now
-                </button>
+              </button>
             </div>
-            </div>
+          </div>
         </div>
       </div>
 
-      
+      {/* Booking Modal */}
       {modalOpen && (
         <dialog open className="modal modal-bottom sm:modal-middle bg-black/60 backdrop-blur-sm">
           <div className="modal-box p-8 rounded-2xl shadow-2xl">
-            <h3 className="font-bold text-3xl mb-8 text-center font-serif">Confirm Your Booking</h3>
+            <h3 className="font-bold text-3xl mb-8 text-center">Confirm Your Booking</h3>
             
             <div className="space-y-6">
               <div>
@@ -192,6 +173,13 @@ const ServiceDetails = () => {
           </div>
         </dialog>
       )}
+
+      {/* Payment Modal */}
+      <PaymentModal 
+        isOpen={showPayment} 
+        onClose={() => setShowPayment(false)} 
+        amount={serviceCost} 
+      />
     </div>
   );
 };

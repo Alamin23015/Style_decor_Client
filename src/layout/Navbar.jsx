@@ -2,19 +2,20 @@ import { Link, NavLink } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useTheme from "../hooks/useTheme";
 import { toast } from "react-toastify";
-import { FaSun, FaMoon, FaSignOutAlt, FaUserCircle, FaBars } from "react-icons/fa";
+import { FaSun, FaMoon, FaBars } from "react-icons/fa";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
+  
   const handleLogout = () => {
     logOut()
       .then(() => toast.success("Logged out successfully"))
       .catch((err) => toast.error(err.message));
   };
 
-  // Active Link Design
+
   const navLinkStyles = ({ isActive }) => {
     return isActive
       ? "text-primary font-bold text-base px-3 py-2 rounded-lg bg-primary/10 transition-all"
@@ -31,7 +32,6 @@ const Navbar = () => {
   );
 
   return (
-   
     <div className="w-full fixed top-0 z-50 bg-base-100/90 backdrop-blur-lg border-b border-base-200 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="navbar py-3 md:py-4"> 
@@ -39,22 +39,20 @@ const Navbar = () => {
          
           <div className="navbar-start">
             <div className="dropdown">
-              <label tabIndex={0} className="btn btn-ghost lg:hidden mr-2 pl-0">
+              <label tabIndex={0} role="button" className="btn btn-ghost lg:hidden mr-2 pl-0">
                 <FaBars className="text-xl" />
               </label>
               <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-4 shadow-xl bg-base-100 rounded-box w-64 gap-2">
                 {navLinks}
-               
                 {!user && (
-                <li className="mt-2">
-  <Link 
-    to="/register" 
-    className="btn bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 w-full"
-  >
-    Register Now
-  </Link>
-</li>
-
+                  <li className="mt-2">
+                    <Link 
+                      to="/register" 
+                      className="btn bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 w-full"
+                    >
+                      Register Now
+                    </Link>
+                  </li>
                 )}
               </ul>
             </div>
@@ -65,17 +63,14 @@ const Navbar = () => {
             </Link>
           </div>
 
-       
           <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1 gap-4">
               {navLinks}
             </ul>
           </div>
 
- 
           <div className="navbar-end gap-2 md:gap-3">
-            
-            {/* Theme Toggle */}
+           
             <button 
               onClick={toggleTheme} 
               className="btn btn-ghost btn-circle btn-sm hover:bg-base-200 transition-transform hover:rotate-90"
@@ -84,43 +79,62 @@ const Navbar = () => {
             </button>
 
             {user ? (
-        
-              <div className="dropdown dropdown-end">
-                <label tabIndex={0} className="btn btn-ghost btn-circle avatar border border-base-300 hover:shadow-md transition-all">
-                  <div className="w-9 md:w-10 rounded-full">
-                    <img src={user?.photoURL || "https://i.ibb.co/T0x4D0H/user.png"} alt="avatar" />
-                  </div>
-                </label>
-                <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow-2xl menu menu-sm dropdown-content bg-base-100 rounded-box w-56 border border-base-200">
-                  <li className="px-4 py-3 border-b border-base-200">
-                    <span className="font-bold text-primary block">{user?.displayName}</span>
-                    <span className="text-xs text-gray-500">View Profile</span>
-                  </li>
-                  <li className="mt-2"><Link to="/dashboard"><FaUserCircle /> Dashboard</Link></li>
-                  <li><button onClick={handleLogout} className="text-red-500 hover:bg-red-50"><FaSignOutAlt /> Logout</button></li>
-                </ul>
-              </div>
-            ) : (
-            
-              <div className="flex items-center gap-2">
-                
-               
-                <Link 
-                  to="/login" 
-                  className="btn btn-sm md:btn-md bg-[#2563EB] hover:bg-[#1d4ed8] border-none text-white rounded-full px-4 md:px-6 shadow-sm"
-                >
-                  Login
-                </Link>
+                <div className="dropdown dropdown-end z-50">
+                    {/* Avatar Trigger */}
+                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar online transition-transform hover:scale-105">
+                        <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            <img alt="User Profile" src={user?.photoURL || "https://i.ibb.co/tYw54p7/user-placeholder.png"} />
+                        </div>
+                    </div>
 
                
-                <Link 
-                  to="/register" 
-                  className="hidden sm:flex btn btn-sm md:btn-md btn-ghost font-bold hover:bg-base-200 rounded-full px-4"
-                >
+                    <ul tabIndex={0} className="menu menu-md dropdown-content mt-4 z-[50] p-2 shadow-2xl bg-base-100 rounded-xl w-72 border border-base-200 font-medium">
+                        
+                     
+                        <li className="menu-title p-0 mb-2">
+                            <div className="flex flex-col items-center justify-center bg-base-200/50 py-4 rounded-t-lg px-4 text-center">
+                                <h3 className="font-bold text-lg text-primary truncate max-w-[250px]">{user?.displayName || "User Name"}</h3>
+                                <p className="text-sm opacity-70 truncate max-w-[250px]">{user?.email}</p>
+                            </div>
+                        </li>
+
+                        <li>
+                            <Link to="/dashboard" className="py-3 hover:text-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25zM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25z" /></svg>
+                                Dashboard
+                            </Link>
+                        </li>
+                        
+                       
+                        <li>
+                            <Link to="/dashboard/profile" className="py-3 hover:text-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
+                                View Profile
+                            </Link>
+                        </li>
+
+                        <div className="divider my-1 px-2"></div>
+
+                   
+                        <li>
+                            <button onClick={handleLogout} className="py-3 text-error hover:bg-error/10 font-semibold">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" /></svg>
+                                Logout
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            ) : (
+               <div className="flex gap-3">
+                <Link to="/login" className="btn btn-primary rounded-full px-6">
+                  Login
+                </Link>
+                <Link to="/register" className="btn btn-outline rounded-full px-6">
                   Register
                 </Link>
               </div>
             )}
+
           </div>
         </div>
       </div>
