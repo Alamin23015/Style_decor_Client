@@ -1,0 +1,74 @@
+import { useEffect, useState } from "react";
+import useAuth from "../../../hooks/useAuth";
+import axios from "axios";
+import { FaCalendarAlt, FaClock, FaCheckCircle } from "react-icons/fa";
+
+const Schedule = () => {
+    const { user } = useAuth();
+    const [schedules, setSchedules] = useState([]);
+    
+    const baseUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+
+    useEffect(() => {
+        if (user?.email) {
+            axios.get(`${baseUrl}/bookings/decorator/${user.email}`)
+                .then(res => {
+                    // তারিখ অনুযায়ী সর্ট করা হচ্ছে (সামনের তারিখ আগে দেখাবে)
+                    const sortedData = res.data.sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate));
+                    setSchedules(sortedData);
+                });
+        }
+    }, [user, baseUrl]);
+
+    return (
+        <div className="p-8 bg-base-100 min-h-screen">
+            <h2 className="text-3xl font-bold mb-8 text-primary flex items-center gap-2">
+                <FaCalendarAlt /> My Work Schedule
+            </h2>
+
+            <div className="overflow-x-auto">
+                <table className="table table-zebra w-full shadow-lg rounded-lg overflow-hidden">
+                    <thead className="bg-primary text-white text-lg">
+                        <tr>
+                            <th>Date</th>
+                            <th>Service</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {schedules.map((item) => (
+                            <tr key={item._id}>
+                                <td className="font-bold text-lg">
+                                    <div className="flex items-center gap-2">
+                                        <FaClock className="text-secondary" />
+                                        {new Date(item.bookingDate || item.date).toDateString()}
+                                    </div>
+                                </td>
+                                <td className="font-medium">{item.serviceName}</td>
+                                <td>{item.location}</td>
+                                <td>
+                                    {item.status === 'Completed' ? (
+                                        <span className="badge badge-success gap-2 text-white">
+                                            <FaCheckCircle /> Done
+                                        </span>
+                                    ) : (
+                                        <span className="badge badge-info text-white">{item.status}</span>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            
+            {schedules.length === 0 && (
+                <div className="text-center mt-10 text-gray-400">
+                    <p>No upcoming schedule found.</p>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default Schedule;

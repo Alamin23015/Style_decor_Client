@@ -3,11 +3,11 @@ import axios from "axios";
 
 const DecoratorDashboard = () => {
   const [projects, setProjects] = useState([]);
-
+  const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app"
   useEffect(() => {
-    axios.get("http://localhost:5000/admin/bookings") // Decorator-এর অ্যাসাইন করা বুকিং
+    axios.get(`${baseUrl}/admin/bookings`) 
       .then(res => {
-        setProjects(res.data.filter(b => b.status === "pending")); // শুধু Pending
+        setProjects(res.data.filter(b => b.status === "pending")); 
       });
   }, []);
 
