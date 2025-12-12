@@ -18,7 +18,7 @@ const ServiceDetails = () => {
   const [location, setLocation] = useState("");
   const [showPayment, setShowPayment] = useState(false);
 
-  const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app";
+ const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app"; 
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
