@@ -1,21 +1,23 @@
 // src/hooks/useRole.jsx
-import { useQuery } from '@tanstack/react-query';
-import useAuth from './useAuth';
-import axios from 'axios';
+import { useQuery } from "@tanstack/react-query";
+import useAuth from "./useAuth";
+import useAxiosSecure from "./useAxiosSecure";
 
 const useRole = () => {
-  const { user, loading } = useAuth();
+    const { user, loading } = useAuth();
+    const axiosSecure = useAxiosSecure();
 
-  const { data: role = 'user', isLoading } = useQuery({
-    queryKey: ['role', user?.email],
-    enabled: !loading && !!user?.email,
-    queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/role/${user.email}`);
-      return res.data.role;
-    },
-  });
+    const { data: role, isLoading: isRoleLoading } = useQuery({
+        queryKey: [user?.email, 'role'],
+        enabled: !loading && !!user?.email, // ইউজার লোড হওয়ার পর কল হবে
+        queryFn: async () => {
+            // 🔥 axios এর বদলে axiosSecure ব্যবহার করুন
+            const res = await axiosSecure.get(`/users/role/${user?.email}`);
+            return res.data.role;
+        }
+    });
 
-  return [role, isLoading];
+    return [role, isRoleLoading];
 };
 
 export default useRole;

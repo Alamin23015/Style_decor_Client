@@ -15,63 +15,54 @@ import axios from "axios";
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
 
-// Google Provider Setup
 const googleProvider = new GoogleAuthProvider();
-
-// 🔥 এই লাইনটি যোগ করা হয়েছে: এতে প্রতিবার একাউন্ট সিলেক্ট করতে বলবে 🔥
 googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
-
-// এই ফাংশনটা দিয়ে ইউজারকে ডাটাবেসে সেভ করব
-const saveUserToDB = async (user) => {
-  const userInfo = {
-    name: user.displayName || "User",
-    email: user.email,
-    photoURL: user.photoURL || "https://i.ibb.co/0s3pdnc/avatar.png",
-    role: user.email === "alamin16105@gmail.com" ? "admin" : "user"  // তোর ইচ্ছামতো চেঞ্জ কর
-  };
-
-  try {
-    await axios.post(`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}/users`, userInfo);
-  } catch (error) {
-    console.error("Failed to save user to DB:", error);
-  }
-};
 
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ডায়নামিক সার্ভার ইউআরএল
+  const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app";
+
+  // ইউজারকে ডাটাবেসে সেভ করার ফাংশন
+  const saveUserToDB = async (user) => {
+    if (!user?.email) return;
+
+    const userInfo = {
+      name: user.displayName || "User",
+      email: user.email,
+      photoURL: user.photoURL || "https://i.ibb.co/0s3pdnc/avatar.png",
+      role: user.email === "alamin16105@gmail.com" ? "admin" : "user" 
+    };
+
+    try {
+      await axios.post(`${baseUrl}/users`, userInfo);
+    } catch (error) {
+      console.error("Failed to save user to DB:", error);
+    }
+  };
+
   const createUser = (email, password) => {
     setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password)
-      .then((result) => {
-        saveUserToDB(result.user);
-        return result;
-      });
+    return createUserWithEmailAndPassword(auth, email, password);
   };
 
   const signIn = (email, password) => {
     setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password)
-      .then((result) => {
-        saveUserToDB(result.user); 
-        return result;
-      });
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
   const googleLogin = () => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        saveUserToDB(result.user); 
-        return result;
-      });
+    return signInWithPopup(auth, googleProvider);
   };
 
   const logOut = () => {
     setLoading(true);
+    localStorage.removeItem("access-token"); // লগআউটের সময় টোকেন মুছে ফেলা
     return signOut(auth);
   };
 
@@ -79,26 +70,27 @@ const AuthContextProvider = ({ children }) => {
     return updateProfile(auth.currentUser, {
       displayName: name,
       photoURL: photo
-    }).then(() => {
-      saveUserToDB(auth.currentUser); 
     });
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
-      if (currentUser) {
-        
-        axios.post(`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}/jwt`, { 
-          email: currentUser.email 
-        })
-        .then(res => {
+      if (currentUser?.email) {
+        // ১. ইউজারকে ডাটাবেসে সেভ করা
+        await saveUserToDB(currentUser);
+
+        // ২. JWT টোকেন সংগ্রহ করা
+        try {
+          const res = await axios.post(`${baseUrl}/jwt`, { email: currentUser.email });
           if (res.data.token) {
             localStorage.setItem("access-token", res.data.token);
           }
-        })
-        .catch(err => console.error("JWT Error:", err));
+        } catch (err) {
+          console.error("JWT Server Error (500):", err.response?.data || err.message);
+          // টোকেন না পেলেও লোডিং শেষ করতে হবে নাহলে সাইট আটকে থাকবে
+        }
       } else {
         localStorage.removeItem("access-token");
       }
@@ -107,7 +99,7 @@ const AuthContextProvider = ({ children }) => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [baseUrl]);
 
   const value = {
     user,

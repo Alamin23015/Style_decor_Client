@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
-import axios from "axios";
+// 🔥 axios এর বদলে useAxiosSecure ইমপোর্ট করা হয়েছে
+import useAxiosSecure from "../../../hooks/useAxiosSecure"; 
 import { FaCalendarAlt, FaClock, FaCheckCircle } from "react-icons/fa";
 
 const Schedule = () => {
     const { user } = useAuth();
+    const axiosSecure = useAxiosSecure(); // 🔥 axiosSecure ইনিশিয়ালাইজ করা হয়েছে
     const [schedules, setSchedules] = useState([]);
-    
-    const baseUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
     useEffect(() => {
         if (user?.email) {
-            axios.get(`${baseUrl}/bookings/decorator/${user.email}`)
+            // 🔥 axiosSecure ব্যবহার করা হয়েছে যাতে টোকেন অটোমেটিক যায়
+            axiosSecure.get(`/bookings/decorator/${user.email}`)
                 .then(res => {
-                    // তারিখ অনুযায়ী সর্ট করা হচ্ছে (সামনের তারিখ আগে দেখাবে)
+                    // আপনার অরিজিনাল তারিখ অনুযায়ী সর্ট করার লজিক হুবহু রাখা হয়েছে
                     const sortedData = res.data.sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate));
                     setSchedules(sortedData);
+                })
+                .catch(err => {
+                    console.error("Schedule load error:", err);
                 });
         }
-    }, [user, baseUrl]);
+    }, [user, axiosSecure]); // dependency তে axiosSecure যোগ করা হয়েছে
 
     return (
         <div className="p-8 bg-base-100 min-h-screen">
@@ -45,7 +49,7 @@ const Schedule = () => {
                                         {new Date(item.bookingDate || item.date).toDateString()}
                                     </div>
                                 </td>
-                                <td className="font-medium">{item.serviceName}</td>
+                                <td className="font-medium">{item.service_name || item.serviceName}</td>
                                 <td>{item.location}</td>
                                 <td>
                                     {item.status === 'Completed' ? (
