@@ -1,7 +1,7 @@
-// src/pages/Services/ServiceDetails.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+
+import useAxiosSecure from "../../hooks/useAxiosSecure"; 
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
 import PaymentModal from "../../components/PaymentModal";
@@ -10,6 +10,7 @@ const ServiceDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure(); 
 
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,18 +18,19 @@ const ServiceDetails = () => {
   const [bookingDate, setBookingDate] = useState("");
   const [location, setLocation] = useState("");
   const [showPayment, setShowPayment] = useState(false);
+  const [newBookingId, setNewBookingId] = useState(null); 
 
- const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app"; 
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
-    axios.get(`${baseUrl}/services/${id}`)
+    
+    axiosSecure.get(`/services/${id}`)
       .then(res => {
         setService(res.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [id, baseUrl]);
+  }, [id, axiosSecure]);
 
   const handleBooking = () => {
     if (!user) {
@@ -55,10 +57,12 @@ const ServiceDetails = () => {
       bookedAt: new Date()
     };
 
-    axios.post(`${baseUrl}/bookings`, bookingData)
+    
+    axiosSecure.post(`/bookings`, bookingData)
       .then(res => {
         if (res.data.insertedId) {
-          toast.success("Booking successful! Admin will contact you soon.");
+          toast.success("Booking successful! Proceed to payment.");
+          setNewBookingId(res.data.insertedId); 
           setModalOpen(false);
           setBookingDate("");
           setLocation("");
@@ -89,6 +93,7 @@ const ServiceDetails = () => {
 
   return (
     <div className="min-h-screen py-28 px-6 bg-base-200">
+     
       <div className="container mx-auto max-w-6xl">
         <div className="bg-base-100 rounded-3xl shadow-2xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -131,18 +136,15 @@ const ServiceDetails = () => {
         </div>
       </div>
 
-      {/* Booking Modal */}
       {modalOpen && (
         <dialog open className="modal modal-bottom sm:modal-middle bg-black/60 backdrop-blur-sm">
           <div className="modal-box p-8 rounded-2xl shadow-2xl">
             <h3 className="font-bold text-3xl mb-8 text-center">Confirm Your Booking</h3>
-            
             <div className="space-y-6">
               <div>
                 <label className="label font-semibold text-lg">Service</label>
                 <input type="text" value={serviceName} disabled className="input input-bordered input-lg w-full bg-base-200 font-semibold" />
               </div>
-
               <div>
                 <label className="label font-semibold text-lg">Preferred Date</label>
                 <input
@@ -165,7 +167,6 @@ const ServiceDetails = () => {
                 />
               </div>
             </div>
-
             <div className="modal-action mt-10 flex justify-end gap-4">
               <button onClick={() => setModalOpen(false)} className="btn btn-ghost btn-lg font-semibold">Cancel</button>
               <button onClick={confirmBooking} className="btn btn-primary btn-lg px-8 font-bold shadow-md">Confirm Booking</button>
@@ -174,11 +175,11 @@ const ServiceDetails = () => {
         </dialog>
       )}
 
-      {/* Payment Modal */}
       <PaymentModal 
         isOpen={showPayment} 
         onClose={() => setShowPayment(false)} 
         amount={serviceCost} 
+        bookingId={newBookingId}
       />
     </div>
   );

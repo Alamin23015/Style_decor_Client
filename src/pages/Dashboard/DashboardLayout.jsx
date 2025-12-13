@@ -17,13 +17,16 @@ const DashboardLayout = () => {
     });
   };
 
-  // NavLink Style Helper
+  
   const navStyle = ({ isActive }) => 
     `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 font-medium ${
       isActive 
         ? "bg-primary text-primary-content shadow-lg shadow-primary/30" 
         : "text-base-content/70 hover:bg-base-200 hover:text-base-content"
     }`;
+
+  
+  const staticLinkStyle = "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 font-medium text-base-content/70 hover:bg-base-200 hover:text-base-content";
 
   return (
     <div className="drawer lg:drawer-open min-h-screen bg-base-200/50 font-sans">
@@ -59,44 +62,41 @@ const DashboardLayout = () => {
           </div>
         </div>
 
-        {/* Main Content Area */}
+       
         <div className="flex-1 p-6 md:p-10 overflow-y-auto">
           <Outlet />
         </div>
       </div>
 
-      {/* Sidebar Area */}
+
       <div className="drawer-side z-50">
         <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
         <aside className="bg-base-100 w-80 min-h-full flex flex-col border-r border-base-200 shadow-xl">
           
-          {/* Brand Logo */}
+         
           <div className="h-20 flex items-center justify-center border-b border-base-200 bg-base-100 sticky top-0 z-10">
             <Link to="/" className="text-3xl font-bold font-serif text-primary tracking-wide">
               StyleDecor
             </Link>
           </div>
 
-          {/* Menu Items */}
+     
           <ul className="menu p-4 w-full space-y-2 flex-1 overflow-y-auto">
             
-            {/* User Menu */}
+           
             {role === "user" && (
               <>
                 <li className="menu-title opacity-60 uppercase text-xs font-bold tracking-wider mt-4">User Panel</li>
-                
-                {/* 👇 CHANGE IS HERE: Path fixed to /dashboard */}
                 <li>
                   <NavLink to="/dashboard" end className={navStyle}>
                     <FaListAlt /> My Bookings
                   </NavLink>
                 </li>
-                
                 <li><NavLink to="/dashboard/profile" className={navStyle}><FaUser /> My Profile</NavLink></li>
               </>
             )}
 
-            {/* Admin Menu */}
+           
             {role === "admin" && (
               <>
                 <li className="menu-title opacity-60 uppercase text-xs font-bold tracking-wider mt-4">Admin Control</li>
@@ -106,7 +106,7 @@ const DashboardLayout = () => {
               </>
             )}
 
-            {/* Decorator Menu */}
+    
             {role === "decorator" && (
               <>
                 <li className="menu-title opacity-60 uppercase text-xs font-bold tracking-wider mt-4">Workstation</li>
@@ -117,7 +117,8 @@ const DashboardLayout = () => {
 
             <div className="divider my-4"></div>
             
-            <li><Link to="/" className={navStyle}><FaHome /> Home Page</Link></li>
+          
+            <li><NavLink to="/" className={navStyle}><FaHome /> Home Page</NavLink></li>
           </ul>
 
           <div className="p-4 border-t border-base-200">

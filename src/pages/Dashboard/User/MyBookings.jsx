@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
+import useAxiosSecure from "../../../hooks/useAxiosSecure"; 
 import useAuth from "../../../hooks/useAuth";
 import PaymentModal from "../../../components/PaymentModal";
 import { toast } from "react-toastify";
@@ -7,16 +8,16 @@ import { FaCalendarAlt, FaMoneyBillWave, FaCheckCircle, FaTimesCircle } from "re
 
 const MyBookings = () => {
   const { user, loading: authLoading } = useAuth();
+  const axiosSecure = useAxiosSecure(); 
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
-  const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app";
-
   const fetchMyBookings = () => {
     if (user?.email) {
-      axios.get(`${baseUrl}/bookings?email=${user.email}`)
+      
+      axiosSecure.get(`/bookings?email=${user.email}`)
         .then(res => setBookings(res.data))
         .finally(() => setLoading(false));
     }
@@ -28,7 +29,7 @@ const MyBookings = () => {
 
   const handlePaymentSuccess = () => {
     setIsModalOpen(false);
-    fetchMyBookings(); // ডাটাবেস থেকে ফ্রেশ ডাটা আনা হবে যাতে "Paid" দেখায়
+    fetchMyBookings(); 
   };
 
   if (loading || authLoading) {
@@ -130,7 +131,6 @@ const MyBookings = () => {
           </div>
         )}
 
-        {/* 🔥 এখানে bookingId={selectedBooking?._id} পাস করা হয়েছে */}
         <PaymentModal
           isOpen={isModalOpen}
           onClose={handlePaymentSuccess}
