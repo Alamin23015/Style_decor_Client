@@ -22,4 +22,4 @@ const AdminRoute = ({ children }) => {
   return <Navigate to="/dashboard" state={{ from: location }} replace />;
 };
 
-export default AdminRoute;   // এটাই মূল লাইন
+export default AdminRoute;   

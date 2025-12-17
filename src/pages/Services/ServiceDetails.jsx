@@ -45,7 +45,7 @@ const ServiceDetails = () => {
     const bookingData = {
       serviceId: service._id,
       serviceName: service.service_name,
-      serviceImg: service.img,
+      serviceImg: service.image,
       cost: service.cost,
       unit: service.unit,
       customerName: user.displayName,
@@ -85,7 +85,7 @@ const ServiceDetails = () => {
   );
 
   const serviceName = service.service_name || "Unknown Service";
-  const serviceImg = service.img || "https://i.ibb.co/0s3pdnc/avatar.png";
+  const serviceImg = service.image || "https://i.ibb.co/0s3pdnc/avatar.png";
   const serviceCost = service.cost || 0;
   const serviceUnit = service.unit || "event";
   const serviceDesc = service.description || "No description available.";

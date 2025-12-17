@@ -24,17 +24,17 @@ const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ডায়নামিক সার্ভার ইউআরএল
+  
   const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app";
 
-  // ইউজারকে ডাটাবেসে সেভ করার ফাংশন
+  
   const saveUserToDB = async (user) => {
     if (!user?.email) return;
 
     const userInfo = {
       name: user.displayName || "User",
       email: user.email,
-      photoURL: user.photoURL || "https://i.ibb.co/0s3pdnc/avatar.png",
+      photoURL: user.photoURL || "https://github.com/Alamin23015/Source_image/raw/main/dec.jpg",
       role: user.email === "alamin16105@gmail.com" ? "admin" : "user" 
     };
 
@@ -62,7 +62,7 @@ const AuthContextProvider = ({ children }) => {
 
   const logOut = () => {
     setLoading(true);
-    localStorage.removeItem("access-token"); // লগআউটের সময় টোকেন মুছে ফেলা
+    localStorage.removeItem("access-token"); 
     return signOut(auth);
   };
 
@@ -78,10 +78,10 @@ const AuthContextProvider = ({ children }) => {
       setUser(currentUser);
 
       if (currentUser?.email) {
-        // ১. ইউজারকে ডাটাবেসে সেভ করা
+      
         await saveUserToDB(currentUser);
 
-        // ২. JWT টোকেন সংগ্রহ করা
+        
         try {
           const res = await axios.post(`${baseUrl}/jwt`, { email: currentUser.email });
           if (res.data.token) {
@@ -89,7 +89,7 @@ const AuthContextProvider = ({ children }) => {
           }
         } catch (err) {
           console.error("JWT Server Error (500):", err.response?.data || err.message);
-          // টোকেন না পেলেও লোডিং শেষ করতে হবে নাহলে সাইট আটকে থাকবে
+          
         }
       } else {
         localStorage.removeItem("access-token");

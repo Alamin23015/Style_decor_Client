@@ -8,23 +8,23 @@ const Profile = () => {
     const { user, updateUserProfile } = useAuth();
     const [loading, setLoading] = useState(false);
     
-    // 🔥 NEW: Database User State 🔥
+
     const [dbUser, setDbUser] = useState(null);
 
-    // Form States
+    
     const [displayName, setDisplayName] = useState("");
     const [photoURL, setPhotoURL] = useState("");
     const [phone, setPhone] = useState("");     // 🔥 NEW 🔥
     const [address, setAddress] = useState(""); // 🔥 NEW 🔥
 
-    // 🔥 NEW: Fetch Database Data 🔥
+    
     useEffect(() => {
         if (user?.email) {
-            // Firebase Data Set
+           
             setDisplayName(user.displayName || "");
             setPhotoURL(user.photoURL || "");
 
-            // Fetch Mongo Data
+           
             axios.get(`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}/users/${user.email}`)
                 .then(res => {
                     setDbUser(res.data);
@@ -41,20 +41,20 @@ const Profile = () => {
         setLoading(true);
 
         try {
-            // 1. Update Firebase (Name & Photo)
+         
             await updateUserProfile(displayName, photoURL);
 
-            // 2. Update Database (Phone & Address)
+            
             const userInfo = {
                 name: displayName,
                 phone: phone,
                 address: address,
-                role: dbUser?.role || "user" // Role ঠিক রাখার জন্য
+                role: dbUser?.role || "user" 
             };
 
             await axios.put(`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}/users/${user.email}`, userInfo);
 
-            // 3. Update Local State UI
+            
             setDbUser({ ...dbUser, ...userInfo });
 
             toast.success("Profile Updated Successfully! 🎉");
@@ -71,10 +71,10 @@ const Profile = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-base-200 p-4 md:p-8">
             
-            {/* Main Card Container */}
+   
             <div className="card lg:card-side bg-base-100 shadow-2xl border border-base-200 max-w-5xl w-full overflow-hidden rounded-2xl">
                 
-                {/* ---------- LEFT SIDE: Profile Preview ---------- */}
+            
                 <div className="lg:w-2/5 bg-gradient-to-br from-indigo-600 via-purple-600 to-primary text-white p-10 flex flex-col items-center justify-center text-center relative">
                     
                     <div className="absolute inset-0 bg-white/5 backdrop-blur-[1px] pattern-dots"></div>
@@ -96,18 +96,18 @@ const Profile = () => {
                         </h2>
                         
                         <div className="badge badge-accent badge-lg shadow-lg font-semibold uppercase tracking-wide mt-2">
-                            {/* 🔥 Show Role from DB 🔥 */}
+                           
                             {dbUser?.role || "User"}
                         </div>
                         
-                        {/* Info Boxes with DB Data */}
+                        
                         <div className="mt-10 w-full space-y-3">
                             <div className="flex items-center gap-3 bg-white/10 p-3 rounded-lg backdrop-blur-md border border-white/10">
                                 <FaEnvelope className="text-lg opacity-80" />
                                 <span className="text-sm font-medium truncate">{user.email}</span>
                             </div>
                             
-                            {/* 🔥 Display Phone 🔥 */}
+                    
                             <div className="flex items-center gap-3 bg-white/10 p-3 rounded-lg backdrop-blur-md border border-white/10">
                                 <FaPhone className="text-lg opacity-80" />
                                 <span className="text-sm font-medium truncate">
@@ -115,7 +115,7 @@ const Profile = () => {
                                 </span>
                             </div>
 
-                            {/* 🔥 Display Address 🔥 */}
+                        
                             <div className="flex items-center gap-3 bg-white/10 p-3 rounded-lg backdrop-blur-md border border-white/10">
                                 <FaMapMarkerAlt className="text-lg opacity-80" />
                                 <span className="text-sm font-medium truncate">
@@ -126,7 +126,7 @@ const Profile = () => {
                     </div>
                 </div>
 
-                {/* ---------- RIGHT SIDE: Edit Form ---------- */}
+              
                 <div className="lg:w-3/5 p-8 md:p-12 bg-base-100">
                     <div className="flex items-center gap-3 mb-8 text-primary border-b pb-4 border-base-200">
                         <FaUserEdit className="text-3xl" />
@@ -138,7 +138,7 @@ const Profile = () => {
 
                     <form onSubmit={handleUpdate} className="space-y-4">
                         
-                        {/* Name Input */}
+                        
                         <div className="form-control">
                             <label className="label font-bold">Full Name</label>
                             <input
@@ -164,7 +164,7 @@ const Profile = () => {
                             </div>
                         </div>
 
-                        {/* 🔥 NEW: Phone Input 🔥 */}
+                      
                         <div className="form-control">
                             <label className="label font-bold">Phone Number</label>
                             <div className="relative">

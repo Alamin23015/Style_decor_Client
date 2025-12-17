@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-// 🔥 axios এর বদলে useAxiosSecure ইমপোর্ট করা হয়েছে
+
 import useAxiosSecure from "../hooks/useAxiosSecure"; 
 import { toast } from "react-toastify";
 
@@ -31,7 +31,7 @@ const CheckoutForm = ({ amount, bookingId, onSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [processing, setProcessing] = useState(false);
-  const axiosSecure = useAxiosSecure(); // 🔥 axiosSecure ইনিশিয়ালাইজ করা হয়েছে
+  const axiosSecure = useAxiosSecure();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,10 +39,10 @@ const CheckoutForm = ({ amount, bookingId, onSuccess }) => {
 
     setProcessing(true);
     try {
-      // ১. পেমেন্ট ইনটেন্ট তৈরি (axiosSecure ব্যবহার করা হয়েছে)
+   
       const { data } = await axiosSecure.post("/create-payment-intent", { amount });
 
-      // ২. স্ট্রাইপ পেমেন্ট কনফার্ম করা
+      
       const result = await stripe.confirmCardPayment(data.clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
@@ -53,7 +53,7 @@ const CheckoutForm = ({ amount, bookingId, onSuccess }) => {
         toast.error(result.error.message || "Payment failed");
       } else {
         if (result.paymentIntent.status === "succeeded") {
-          // ৩. 🔥 ডাটাবেস আপডেট করা (axiosSecure ব্যবহার করা হয়েছে)
+         
           const res = await axiosSecure.patch(`/bookings/payment-success/${bookingId}`, {
             transactionId: result.paymentIntent.id
           });

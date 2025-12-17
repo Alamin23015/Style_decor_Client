@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
-    // baseURL-এ ফলব্যাক ইউআরএল যোগ করা হয়েছে
+   
     baseURL: import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app"
 });
 

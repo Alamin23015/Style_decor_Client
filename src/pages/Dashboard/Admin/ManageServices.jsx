@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrashAlt, FaPlus, FaTimes } from "react-icons/fa";
 
-// এই লাইনটা উপরে যোগ কর (শুধু এটাই যোগ করতে হবে)
+
 const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server-production.up.railway.app";
 
 const ManageServices = () => {
@@ -125,7 +125,7 @@ const ManageServices = () => {
             >
               <div className="relative h-64 overflow-hidden">
                 <img
-                  src={service.img || "https://i.ibb.co/0s3pdnc/avatar.png"}
+                  src={service.image|| "https://i.ibb.co/0s3pdnc/avatar.png"}
                   alt={service.service_name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />

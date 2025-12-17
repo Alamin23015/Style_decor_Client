@@ -66,7 +66,7 @@ const Services = () => {
   setPageNumber(0);
 }, [search, category, minPrice, maxPrice, services]);
 
-  // Display Logic with Safety Check
+ 
   const displayServices = Array.isArray(filtered) && filtered.length > 0 
     ? filtered
         .slice(pagesVisited, pagesVisited + servicesPerPage)
@@ -80,7 +80,7 @@ const Services = () => {
           >
             <figure className="h-64 overflow-hidden">
               <img 
-                src={service.img || "https://i.ibb.co/0s3pdnc/avatar.png"} 
+                src={service.image || "https://i.ibb.co/0s3pdnc/avatar.png"} 
                 alt={service.service_name}
                 className="w-full h-full object-cover hover:scale-110 transition"
               />

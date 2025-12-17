@@ -2,8 +2,16 @@ import { Outlet, Link, NavLink, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useRole from "../../hooks/useRole";
 import { 
-  FaBars, FaHome, FaUser, FaListAlt, FaCalendarCheck, 
-  FaUsers, FaServicestack, FaSignOutAlt, FaPaintRoller 
+  FaBars, 
+  FaHome, 
+  FaUser, 
+  FaListAlt, 
+  FaCalendarCheck, 
+  FaUsers, 
+  FaServicestack, 
+  FaSignOutAlt, 
+  FaPaintRoller,
+  FaChartPie 
 } from "react-icons/fa";
 
 const DashboardLayout = () => {
@@ -97,14 +105,22 @@ const DashboardLayout = () => {
             )}
 
            
-            {role === "admin" && (
-              <>
-                <li className="menu-title opacity-60 uppercase text-xs font-bold tracking-wider mt-4">Admin Control</li>
-                <li><NavLink to="/dashboard/admin/services" className={navStyle}><FaServicestack /> Manage Services</NavLink></li>
-                <li><NavLink to="/dashboard/admin/users" className={navStyle}><FaUsers /> Manage Users</NavLink></li>
-                <li><NavLink to="/dashboard/admin/bookings" className={navStyle}><FaListAlt /> All Bookings</NavLink></li>
-              </>
-            )}
+           {role === "admin" && (
+  <>
+    <li className="menu-title opacity-60 uppercase text-xs font-bold tracking-wider mt-4">Admin Control</li>
+    
+   
+    <li>
+      <NavLink to="/dashboard/admin/analytics" className={navStyle}>
+        <FaChartPie /> Statistics
+      </NavLink>
+    </li>
+
+    <li><NavLink to="/dashboard/admin/services" className={navStyle}><FaServicestack /> Manage Services</NavLink></li>
+    <li><NavLink to="/dashboard/admin/users" className={navStyle}><FaUsers /> Manage Users</NavLink></li>
+    <li><NavLink to="/dashboard/admin/bookings" className={navStyle}><FaListAlt /> All Bookings</NavLink></li>
+  </>
+)}
 
     
             {role === "decorator" && (

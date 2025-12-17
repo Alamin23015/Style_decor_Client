@@ -9,12 +9,12 @@ import Login from '../pages/Auth/Login'
 import Register from '../pages/Auth/Register'
 import DashboardLayout from '../layout/DashboardLayout'
 
-// Dashboard Pages
+
 import UserDashboard from '../pages/Dashboard/UserDashboard'
 import AdminDashboard from '../pages/Dashboard/Admin/AdminDashboard'
 import MyBookings from '../pages/Dashboard/User/MyBookings'
 
-// Routes
+
 import PrivateRoute from './PrivateRoute'
 import AdminRoute from './AdminRoute'
 <Route path="/register" element={<Register />} />
@@ -27,7 +27,6 @@ const RoutesConfig = (
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
 
-    {/* Dashboard Routes */}
     <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
       <Route index element={<UserDashboard />} />
       <Route path="my-bookings" element={<MyBookings />} />

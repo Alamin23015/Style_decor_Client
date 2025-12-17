@@ -24,7 +24,7 @@ const AllBookings = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            // baseURL হুকের ভেতর থাকায় এখানে শুধু এন্ডপয়েন্ট লিখলেই হবে
+     
             const [bookingsRes, usersRes] = await Promise.all([
                 axiosSecure.get("/admin/bookings"),
                 axiosSecure.get("/admin/users")

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useAxiosSecure from "../../../hooks/useAxiosSecure"; // টোকেন হুক
+import useAxiosSecure from "../../../hooks/useAxiosSecure"; 
 import { toast } from "react-toastify";
 
 const ManageUsers = () => {
@@ -8,7 +8,6 @@ const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
-    // axiosSecure ব্যবহার করার ফলে baseUrl আর প্রয়োজন নেই
     axiosSecure.get('/admin/users')
       .then(res => {
         setUsers(res.data);
@@ -24,7 +23,8 @@ const ManageUsers = () => {
   const updateRole = (email, newRole) => {
     axiosSecure.put(`/users/${email}`, { role: newRole })
       .then(() => {
-        toast.success(`User is now ${newRole}!`);
+        toast.success(`Role updated to ${newRole}!`);
+        
         setUsers(users.map(u => u.email === email ? { ...u, role: newRole } : u));
       })
       .catch(() => toast.error("Failed to update role"));
@@ -43,19 +43,37 @@ const ManageUsers = () => {
             <div className="card-body items-center text-center">
               <div className="avatar mb-4">
                 <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-4">
-                  <img src={u.photoURL || "https://i.ibb.co/0s3pdnc/avatar.png"} alt={u.name} />
+                  <img src={u.photoURL || "https://github.com/Alamin23015/Source_image/raw/main/dec.jpg"} alt={u.name} />
                 </div>
               </div>
               <h3 className="text-xl font-bold">{u.name}</h3>
               <p className="text-sm opacity-70">{u.email}</p>
-              <div className="mt-4">
-                <span className={`badge badge-lg font-bold px-4 py-3 ${u.role === "admin" ? "badge-error" : u.role === "decorator" ? "badge-info" : "badge-ghost"}`}>
-                  {u.role?.toUpperCase()}
+              
+              <div className="mt-2">
+                <span className={`badge badge-lg font-bold px-4 py-3 ${
+                  u.role === "admin" ? "badge-error" : 
+                  u.role === "decorator" ? "badge-info" : "badge-ghost"
+                }`}>
+                  {u.role ? u.role.toUpperCase() : "USER"}
                 </span>
               </div>
-              <div className="card-actions justify-center mt-6 gap-2">
-                {u.role !== "admin" && <button onClick={() => updateRole(u.email, "admin")} className="btn btn-error btn-sm">Make Admin</button>}
-                {u.role !== "decorator" && u.role !== "admin" && <button onClick={() => updateRole(u.email, "decorator")} className="btn btn-info btn-sm">Make Decorator</button>}
+
+              
+              <div className="card-actions justify-center mt-6 flex-wrap gap-2">
+                
+                {u.role !== "admin" && (
+                  <button onClick={() => updateRole(u.email, "admin")} className="btn btn-error btn-xs">Make Admin</button>
+                )}
+                
+                
+                {u.role !== "decorator" && (
+                  <button onClick={() => updateRole(u.email, "decorator")} className="btn btn-info btn-xs">Make Decorator</button>
+                )}
+
+                
+                {(u.role === "admin" || u.role === "decorator") && (
+                  <button onClick={() => updateRole(u.email, "user")} className="btn btn-outline btn-xs">Make User</button>
+                )}
               </div>
             </div>
           </div>
