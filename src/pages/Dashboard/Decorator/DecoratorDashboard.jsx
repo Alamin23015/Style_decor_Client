@@ -3,7 +3,7 @@ import axios from "axios";
 
 const DecoratorDashboard = () => {
   const [projects, setProjects] = useState([]);
-  const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server.onrender.com/"
+  const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server.onrender.com"
   useEffect(() => {
     axios.get(`${baseUrl}/admin/bookings`) 
       .then(res => {

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { FaEdit, FaTrashAlt, FaPlus, FaTimes } from "react-icons/fa";
 
 
-const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server.onrender.com/";
+const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server.onrender.com";
 
 const ManageServices = () => {
   const [services, setServices] = useState([]);

@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
    
-    baseURL: import.meta.env.VITE_SERVER_URL || "https://style-decor-server.onrender.com/"
+    baseURL: import.meta.env.VITE_SERVER_URL || "https://style-decor-server.onrender.com"
 });
 
 const useAxiosSecure = () => {
