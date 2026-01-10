@@ -9,7 +9,7 @@ const FeaturedServices = () => {
 
   useEffect(() => {
    
-    axios.get(`https://style-decor-server-production.up.railway.app/services`) 
+    axios.get(`https://style-decor-server.onrender.com/services`) 
       .then((res) => {
         console.log("Fetched Services Data:", res.data); // Console-e dekho image link ashche kina
         setServices(res.data);

@@ -22,7 +22,7 @@ const Services = () => {
   const pagesVisited = pageNumber * servicesPerPage;
 
   useEffect(() => {
-  axios.get(`https://style-decor-server-production.up.railway.app/services`)
+  axios.get(`https://style-decor-server.onrender.com/services`)
       .then(res => {
         
         if (Array.isArray(res.data)) {

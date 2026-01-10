@@ -38,8 +38,8 @@ const Footer = () => {
         <div>
           <h3 className="footer-title text-lg mb-3 font-semibold">Contact</h3>
           <p className="opacity-80">Dhaka, Bangladesh</p>
-          <p className="opacity-80">+880 1234-567890</p>
-          <p className="opacity-80">info@styledecor.com</p>
+          <p className="opacity-80">+880 1316179445</p>
+          <p className="opacity-80">alamin16105@gmail.com</p>
           <p className="opacity-80">Sat–Thu: 9AM–10PM</p>
         </div>
 
