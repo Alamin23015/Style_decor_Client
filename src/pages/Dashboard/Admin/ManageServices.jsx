@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrashAlt, FaPlus, FaTimes } from "react-icons/fa";
 
-
+// আপনার ব্যাকেন্ড URL
 const baseUrl = import.meta.env.VITE_SERVER_URL || "https://style-decor-server.onrender.com";
 
 const ManageServices = () => {
@@ -35,27 +35,50 @@ const ManageServices = () => {
     }
   };
 
+  // --- পরিবর্তিত handleSubmit ফাংশন ---
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // টোকেন সংগ্রহ (লগইন করার সময় আপনি এটি সেভ করেছিলেন)
+    const token = localStorage.getItem('access-token'); 
+
     const url = editing 
       ? `${baseUrl}/services/${editing._id}` 
       : `${baseUrl}/services`;
     const method = editing ? "put" : "post";
 
     try {
-      await axios[method](url, formData);
+      // হেডারসহ এক্সিওস কল
+      await axios({
+        method: method,
+        url: url,
+        data: formData,
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      });
+
       toast.success(editing ? "Service updated successfully!" : "New service added!");
       closeModal();
       fetchServices();
     } catch (err) {
-      toast.error("Operation failed. Please try again.");
+      console.error("Error response:", err.response?.data);
+      toast.error(err.response?.data?.message || "Operation failed. Please try again.");
     }
   };
 
+  // --- পরিবর্তিত handleDelete ফাংশন ---
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this service?")) return;
+    
+    const token = localStorage.getItem('access-token');
+
     try {
-      await axios.delete(`${baseUrl}/services/${id}`);
+      await axios.delete(`${baseUrl}/services/${id}`, {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      });
       toast.success("Service deleted");
       fetchServices();
     } catch (err) {
@@ -95,7 +118,6 @@ const ManageServices = () => {
   return (
     <div className="min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold font-serif text-primary">
             Manage Services
@@ -105,7 +127,6 @@ const ManageServices = () => {
           </p>
         </div>
 
-    
         <div className="flex justify-center mb-10">
           <button
             onClick={() => setShowModal(true)}
@@ -116,7 +137,6 @@ const ManageServices = () => {
           </button>
         </div>
 
-        
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {services.map((service) => (
             <div
@@ -125,12 +145,10 @@ const ManageServices = () => {
             >
               <div className="relative h-64 overflow-hidden">
                 <img
-                  src={service.image|| "https://i.ibb.co/0s3pdnc/avatar.png"}
+                  src={service.img || "https://i.ibb.co/0s3pdnc/avatar.png"}
                   alt={service.service_name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
                 <div className="absolute top-4 left-4">
                   <span className="badge badge-primary badge-lg font-medium shadow-lg">
                     {service.category.charAt(0).toUpperCase() + service.category.slice(1)}
@@ -142,29 +160,18 @@ const ManageServices = () => {
                 <h3 className="text-2xl font-bold font-serif text-primary">
                   {service.service_name}
                 </h3>
-                
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-bold text-secondary">৳{service.cost}</span>
                   <span className="text-sm text-base-content/60">/{service.unit}</span>
                 </div>
-
                 <p className="text-base-content/80 line-clamp-3 leading-relaxed">
                   {service.description}
                 </p>
-
                 <div className="flex gap-3 pt-4 border-t border-base-300">
-                  <button
-                    onClick={() => openEditModal(service)}
-                    className="flex-1 btn btn-outline btn-warning btn-sm hover:btn-warning hover:text-blue
-                     transition-all"
-                  >
+                  <button onClick={() => openEditModal(service)} className="flex-1 btn btn-outline btn-warning btn-sm">
                     <FaEdit /> Edit
                   </button>
-                  <button
-                    onClick={() => handleDelete(service._id)}
-                    className="flex-1 btn btn-outline btn-error btn-sm hover:btn-error hover:text-blue
-                     transition-all"
-                  >
+                  <button onClick={() => handleDelete(service._id)} className="flex-1 btn btn-outline btn-error btn-sm">
                     <FaTrashAlt /> Delete
                   </button>
                 </div>
@@ -174,7 +181,6 @@ const ManageServices = () => {
         </div>
       </div>
 
-     
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="relative w-full max-w-4xl bg-base-100 rounded-3xl shadow-2xl overflow-hidden">
@@ -182,10 +188,7 @@ const ManageServices = () => {
               <h2 className="text-3xl font-bold font-serif text-center">
                 {editing ? "Update Service" : "Add New Service"}
               </h2>
-              <button
-                onClick={closeModal}
-                className="absolute top-4 right-4 btn btn-circle btn-ghost text-white hover:bg-white/20"
-              >
+              <button onClick={closeModal} className="absolute top-4 right-4 btn btn-circle btn-ghost text-white">
                 <FaTimes className="text-xl" />
               </button>
             </div>
@@ -194,48 +197,38 @@ const ManageServices = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="form-control">
                   <label className="label"><span className="label-text font-semibold">Service Name</span></label>
-                  <input type="text" required value={formData.service_name} onChange={(e) => setFormData({ ...formData, service_name: e.target.value })} className="input input-bordered input-lg w-full focus:input-primary" placeholder="e.g. Royal Wedding Stage" />
+                  <input type="text" required value={formData.service_name} onChange={(e) => setFormData({ ...formData, service_name: e.target.value })} className="input input-bordered w-full" />
                 </div>
-
                 <div className="form-control">
                   <label className="label"><span className="label-text font-semibold">Category</span></label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="select select-secondary select-lg w-full bg-gradient-to-r from-pink-50 to-purple-50 border-pink-300 focus:border-pink-500 focus:ring-pink-300"
-                  >
-                    <option value="wedding" className="bg-pink-100 text-pink-900 font-medium">Wedding</option>
-                    <option value="home" className="bg-indigo-100 text-indigo-900 font-medium">Home Decor</option>
-                    <option value="birthday" className="bg-orange-100 text-orange-900 font-medium">Birthday</option>
-                    <option value="corporate" className="bg-purple-100 text-purple-900 font-medium">Corporate</option>
-                    <option value="other" className="bg-gray-200 text-gray-800 font-medium">Other</option>
+                  <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="select select-bordered w-full">
+                    <option value="wedding">Wedding</option>
+                    <option value="home">Home Decor</option>
+                    <option value="birthday">Birthday</option>
+                    <option value="corporate">Corporate</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
-
                 <div className="form-control">
                   <label className="label"><span className="label-text font-semibold">Cost (৳)</span></label>
-                  <input type="number" required value={formData.cost} onChange={(e) => setFormData({ ...formData, cost: e.target.value })} className="input input-bordered input-lg w-full focus:input-primary" placeholder="50000" />
+                  <input type="number" required value={formData.cost} onChange={(e) => setFormData({ ...formData, cost: e.target.value })} className="input input-bordered w-full" />
                 </div>
-
                 <div className="form-control">
                   <label className="label"><span className="label-text font-semibold">Unit</span></label>
-                  <input type="text" required value={formData.unit} onChange={(e) => setFormData({ ...formData, unit: e.target.value })} className="input input-bordered input-lg w-full focus:input-primary" placeholder="per event" />
+                  <input type="text" required value={formData.unit} onChange={(e) => setFormData({ ...formData, unit: e.target.value })} className="input input-bordered w-full" />
                 </div>
-
                 <div className="form-control md:col-span-2">
                   <label className="label"><span className="label-text font-semibold">Image URL</span></label>
-                  <input type="url" required value={formData.img} onChange={(e) => setFormData({ ...formData, img: e.target.value })} className="input input-bordered input-lg w-full focus:input-primary" placeholder="https://example.com/image.jpg" />
+                  <input type="url" required value={formData.img} onChange={(e) => setFormData({ ...formData, img: e.target.value })} className="input input-bordered w-full" />
                 </div>
-
                 <div className="form-control md:col-span-2">
                   <label className="label"><span className="label-text font-semibold">Description</span></label>
-                  <textarea required rows={4} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="textarea textarea-bordered textarea-lg w-full focus:textarea-primary" placeholder="Describe the service in detail..." />
+                  <textarea required rows={4} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="textarea textarea-bordered w-full" />
                 </div>
               </div>
-
               <div className="flex justify-end gap-4 pt-6 border-t border-base-300">
-                <button type="button" onClick={closeModal} className="btn btn-ghost btn-lg">Cancel</button>
-                <button type="submit" className="btn btn-primary btn-lg px-10 shadow-lg hover:shadow-xl">
+                <button type="button" onClick={closeModal} className="btn btn-ghost">Cancel</button>
+                <button type="submit" className="btn btn-primary px-10">
                   {editing ? "Update Service" : "Create Service"}
                 </button>
               </div>
